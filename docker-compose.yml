@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  ffmpeg-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - /tmp/ffmpeg_processing:/tmp/ffmpeg_api
+    environment:
+      - WORKERS=2
+      - THREADS=2
+      - TIMEOUT=300
+    restart: unless-stopped

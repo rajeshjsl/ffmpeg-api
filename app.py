@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 import shutil
 import tempfile
+import glob
 
 # Configure logging
 logging.basicConfig(
@@ -22,15 +23,32 @@ def check_disk_space():
     try:
         total, used, free = shutil.disk_usage(TEMP_DIR)
         free_gb = free // (1024 * 1024 * 1024)  # Convert to GB
-        logger.info(f"Available disk space: {free_gb}GB")
+        used_gb = used // (1024 * 1024 * 1024)
+        total_gb = total // (1024 * 1024 * 1024)
         
-        if free < used:  # Simple check: at least as much free space as the space being used
-            raise RuntimeError(f"Insufficient disk space. Only {free_gb}GB available")
+        logger.info(f"Storage stats - Total: {total_gb}GB, Used: {used_gb}GB, Available: {free_gb}GB")
+        
+        # Warning if less than 10GB free
+        if free < (10 * 1024 * 1024 * 1024):  
+            logger.warning(f"Low disk space warning. Only {free_gb}GB available")
             
     except Exception as e:
         logger.error(f"Error checking disk space: {e}")
-        # Don't block processing, just log the error
         pass
+
+def cleanup_old_files():
+    """Cleanup any leftover temporary files"""
+    try:
+        pattern = str(TEMP_DIR / "*")
+        for file in glob.glob(pattern):
+            try:
+                if os.path.isfile(file):
+                    os.remove(file)
+                    logger.debug(f"Cleaned up old file: {file}")
+            except Exception as e:
+                logger.error(f"Error cleaning up old file {file}: {e}")
+    except Exception as e:
+        logger.error(f"Error during old files cleanup: {e}")
 
 def create_app():
     """Application factory function"""
@@ -38,12 +56,15 @@ def create_app():
 
     # Initialize temp directory
     try:
-        if TEMP_DIR.exists():
-            shutil.rmtree(TEMP_DIR)
-        TEMP_DIR.mkdir(exist_ok=True)
-        logger.info(f"Initialized temporary directory: {TEMP_DIR}")
+        # Ensure directory exists
+        TEMP_DIR.mkdir(exist_ok=True, parents=True)
+        logger.info(f"Using temporary directory: {TEMP_DIR}")
+        
+        # Clean up any old files that might have been left
+        cleanup_old_files()
+        
     except Exception as e:
-        logger.error(f"Error initializing temp directory: {e}")
+        logger.error(f"Error during initialization: {e}")
 
     def cleanup_files(*files):
         """Clean up temporary files"""
@@ -186,7 +207,6 @@ def create_app():
     return app
 
 # Create the application instance
-# This is used by both Flask development server and Gunicorn
 app = create_app()
 
 def main():
