@@ -26,7 +26,8 @@ RUN mkdir -p /tmp/ffmpeg_api && \
 ENV PYTHONUNBUFFERED=1
 ENV WORKERS=2
 ENV THREADS=2
-ENV TIMEOUT=300
+ENV TIMEOUT=600        
+ENV FFMPEG_TIMEOUT=0   
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

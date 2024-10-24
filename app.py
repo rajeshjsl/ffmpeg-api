@@ -50,6 +50,20 @@ def cleanup_old_files():
     except Exception as e:
         logger.error(f"Error during old files cleanup: {e}")
 
+def run_with_timeout(cmd, timeout_seconds):
+    """Run command with timeout"""
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds  # Add timeout
+        )
+        return result
+    except subprocess.TimeoutExpired as e:
+        logger.error(f"FFmpeg process timed out after {timeout_seconds} seconds")
+        raise RuntimeError(f"Video processing timed out after {timeout_seconds} seconds") from e
+
 def create_app():
     """Application factory function"""
     app = Flask(__name__)
@@ -166,12 +180,16 @@ def create_app():
 
                 logger.info(f"Executing FFmpeg command: {' '.join(ffmpeg_cmd)}")
                 
-                # Execute FFmpeg
-                result = subprocess.run(
-                    ffmpeg_cmd,
-                    capture_output=True,
-                    text=True
-                )
+                # Get FFmpeg timeout from environment
+                ffmpeg_timeout = int(os.getenv('FFMPEG_TIMEOUT', 0))  # 0 means no timeout
+                
+                # Execute FFmpeg with or without timeout
+                if ffmpeg_timeout > 0:
+                    logger.info(f"Running FFmpeg with {ffmpeg_timeout} seconds timeout")
+                    result = run_with_timeout(ffmpeg_cmd, ffmpeg_timeout)
+                else:
+                    logger.info("Running FFmpeg without timeout")
+                    result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
 
                 if result.returncode != 0:
                     logger.error(f"FFmpeg error: {result.stderr}")

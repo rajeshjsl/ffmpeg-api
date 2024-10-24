@@ -2,4 +2,5 @@ docker run -p 8000:8000 ^
   -v C:/Users/jrajeshkumar/Desktop/BL/Projects/ffmpeg-api/tmp:/tmp/ffmpeg_api ^
   -e WORKERS=4 ^
   -e TIMEOUT=600 ^
+  -e FFMPEG_TIMEOUT=0 ^
   ffmpeg-api
