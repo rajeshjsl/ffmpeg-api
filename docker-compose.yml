@@ -3,8 +3,10 @@ version: '3'
 services:
   ffmpeg-api:
     build: .
-    ports:
-      - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
     volumes:
       - /tmp/ffmpeg_api:/tmp/ffmpeg_api
     environment:
