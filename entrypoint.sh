@@ -1,7 +1,10 @@
 #!/bin/bash
-exec gunicorn app:app \
-    --worker-class gthread \
+exec gunicorn \
     --workers "${WORKERS}" \
     --threads "${THREADS}" \
     --timeout "${TIMEOUT}" \
-    --bind 0.0.0.0:8000
+    --bind 0.0.0.0:8000 \
+    --log-level info \
+    --access-logfile - \
+    --error-logfile - \
+    "app:app"

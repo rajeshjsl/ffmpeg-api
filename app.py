@@ -58,7 +58,11 @@ def create_app():
     @app.route('/health', methods=['GET'])
     def health_check():
         """Health check endpoint"""
-        return jsonify({"status": "healthy", "service": "ffmpeg-api"}), 200
+        return jsonify({
+            "status": "healthy", 
+            "service": "ffmpeg-api",
+            "mode": "development" if app.debug else "production"
+        }), 200
 
     @app.route('/captionize', methods=['POST'])
     def captionize_video():
@@ -182,7 +186,14 @@ def create_app():
     return app
 
 # Create the application instance
+# This is used by both Flask development server and Gunicorn
 app = create_app()
 
-if __name__ == '__main__':
+def main():
+    """Entry point for local development server"""
+    logger.info("Starting development server...")
+    logger.info("Note: For production, use Gunicorn via Docker instead")
     app.run(host='0.0.0.0', port=8000, debug=True)
+
+if __name__ == '__main__':
+    main()
