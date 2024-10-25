@@ -27,8 +27,14 @@ services:
       net.core.somaxconn: 1024
     labels:
       - 'traefik.http.middlewares.ffmpeg-api-auth.basicauth.users=test:$2b$12$JjB6HeBSszfIUjW1WQX5ruJQek5tisC5V5SLKi7N4UjoZqZ0wkMf2'
-      - "traefik.http.middlewares.headers-ffmpeg.headers.accesscontrolexposeheaders=Content-Disposition"
-      - "traefik.http.middlewares.headers-ffmpeg.headers.customResponseHeaders.Access-Control-Expose-Headers=Content-Disposition"      
-
+      # Try this headers configuration
+      - "traefik.http.middlewares.ffmpeg-headers.headers.customResponseHeaders.Access-Control-Expose-Headers=*,Content-Disposition"
+      - "traefik.http.middlewares.ffmpeg-headers.headers.customResponseHeaders.Access-Control-Allow-Headers=*"
+      - "traefik.http.middlewares.ffmpeg-headers.headers.customResponseHeaders.Access-Control-Allow-Methods=GET,POST,OPTIONS"
+      - "traefik.http.middlewares.ffmpeg-headers.headers.customResponseHeaders.Access-Control-Allow-Origin=*"
+      # Make sure headers aren't being stripped
+      - "traefik.http.middlewares.ffmpeg-headers.headers.sslProxyHeaders.X-Forwarded-Proto=https"
+      - "traefik.http.middlewares.ffmpeg-headers.headers.forceSTSHeader=false"
+      - "traefik.http.middlewares.ffmpeg-headers.headers.frameDeny=false"
 volumes:
   ffmpeg_api:
