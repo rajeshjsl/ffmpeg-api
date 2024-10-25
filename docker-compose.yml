@@ -27,13 +27,7 @@ services:
       net.core.somaxconn: 1024
     labels:
       - 'traefik.http.middlewares.ffmpeg-api-auth.basicauth.users=test:$2b$12$JjB6HeBSszfIUjW1WQX5ruJQek5tisC5V5SLKi7N4UjoZqZ0wkMf2'
-      - "traefik.http.middlewares.headers-fix.headers.customRequestHeaders.X-Forwarded-Proto=https"
-      - "traefik.http.middlewares.headers-fix.headers.forceSTSHeader=false"
-      - "traefik.http.middlewares.headers-fix.headers.frameDeny=false"
-      - "traefik.http.middlewares.headers-fix.headers.sslRedirect=false"
-      - "traefik.http.middlewares.headers-fix.headers.stsIncludeSubdomains=false"
-      - "traefik.http.middlewares.headers-fix.headers.stsPreload=false"
-      - "traefik.http.middlewares.headers-fix.headers.contentTypeNosniff=false"
+      - "traefik.http.middlewares.headers-fix.headers.sslProxyHeaders.alpn=http/1.1"
 
 volumes:
   ffmpeg_api:
