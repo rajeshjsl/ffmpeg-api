@@ -26,11 +26,9 @@ services:
     sysctls:
       net.core.somaxconn: 1024
     labels:
-      - 'traefik.http.middlewares.ffmpeg-api-auth.basicauth.users=test:$2b$12$JjB6HeBSszfIUjW1WQX5ruJQek5tisC5V5SLKi7N4UjoZqZ0wkMf2'
-      - "traefik.enable=true"
+      - 'traefik.http.middlewares.ffmpeg-api-auth.basicauth.users=test:$2b$12$JjB6HeBSszfIUjW1WQX5ruJQek5tisC5V5SLKi7N4UjoZqZ0wkMf2'      
       - "traefik.http.middlewares.ffmpeg-headers.headers.accesscontrolexposeheaders=Content-Disposition"
-      - "traefik.http.middlewares.ffmpeg-headers.headers.accessControlAllowHeaders=*"
-      - "traefik.http.routers.ffmpeg-api.middlewares=ffmpeg-headers@docker"
+      - "traefik.http.middlewares.ffmpeg-headers.headers.accessControlAllowHeaders=*"      
 
 volumes:
   ffmpeg_api:
