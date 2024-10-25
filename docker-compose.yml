@@ -26,7 +26,7 @@ services:
     sysctls:
       net.core.somaxconn: 1024
     labels:
-      - 'traefik.http.middlewares.ffmpeg-api-auth.basicauth.users=$${BASICAUTH_USER}:$${BASICAUTH_HASH}'
+      - 'traefik.http.middlewares.ffmpeg-api-auth.basicauth.users=$BASICAUTH_USER:$BASICAUTH_HASH'
 
 volumes:
   ffmpeg_api:
