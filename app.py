@@ -216,15 +216,11 @@ def create_app():
                     download_name=output_filename
                 )
                 
-                # Remove any existing headers we want to control
-                if 'Access-Control-Expose-Headers' in response.headers:
-                  del response.headers['Access-Control-Expose-Headers']
-                if 'Content-Disposition' in response.headers:
-                  del response.headers['Content-Disposition']
-                # Add headers in specific order
-                response.headers['Content-Type'] = mime_type  # Ensure mime type is set
+                # Set mime type and headers explicitly in a specific order
+                response.headers['Content-Type'] = mime_type
+                response.headers['X-Filename'] = output_filename
                 response.headers['Content-Disposition'] = f'attachment; filename="{output_filename}"'
-                response.headers['Access-Control-Expose-Headers'] = 'Content-Disposition'
+                response.headers['Access-Control-Expose-Headers'] = 'Content-Disposition,X-Filename'
 
                 return response
 
