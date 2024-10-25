@@ -6,7 +6,7 @@ services:
         limits:
           cpus: '2'
     volumes:
-      - /ffmpeg_api:/tmp/ffmpeg_api
+      - ffmpeg_api:/tmp/ffmpeg_api
     environment:
       - WORKERS=2
       - THREADS=2
@@ -25,3 +25,6 @@ services:
         hard: 65536
     sysctls:
       net.core.somaxconn: 1024
+
+volumes:
+  ffmpeg_api:
