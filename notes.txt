@@ -1,6 +1,33 @@
+docker build -t ffmpeg-api .
+
 docker run -p 8000:8000 ^
   -v C:/Users/jrajeshkumar/Desktop/BL/Projects/ffmpeg-api/tmp:/tmp/ffmpeg_api ^
   -e WORKERS=2 ^
   -e TIMEOUT=600 ^
   -e FFMPEG_TIMEOUT=0 ^
   ffmpeg-api
+
+docker-compose up -d
+
+docker tag ffmpeg-api rajeshjsl3/ffmpeg-api:latest
+docker push rajeshjsl3/ffmpeg-api:latest
+
+
+# for multiplatform build
+docker buildx create --name mybuilder --use
+docker buildx build --platform linux/amd64,linux/arm64 -t rajeshjsl3/ffmpeg-api:latest --push .
+
+
+# to clear build cache
+# Note:
+# The -f flag forces the operation without asking for confirmation
+# --volumes will also remove volumes
+# This will remove ALL Docker resources, so make sure you don't need any local images before running these commands
+# You'll need to re-pull or rebuild any images you need after this cleanup
+
+docker builder prune -a -f
+docker buildx prune -a -f
+docker system prune -a --volumes
+docker rmi $(docker images -a -q) -f
+
+

@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import glob
+import mimetypes
 
 # Configure logging
 logging.basicConfig(
@@ -197,11 +198,30 @@ def create_app():
                     return jsonify({"error": "FFmpeg processing failed", "details": result.stderr}), 500
 
                 logger.info("Video processing completed successfully")
-                return send_file(
+
+                # Get the original input filename and create output filename
+                original_filename = video_file.filename
+                output_filename = f"captioned_{original_filename}"
+
+                # Determine the correct mime type
+                mime_type, _ = mimetypes.guess_type(output_filename)
+                if not mime_type:
+                    mime_type = 'video/mp4'  # Default to video/mp4 if unable to guess
+
+                # Create response using send_file
+                response = send_file(
                     str(output_path),
+                    mimetype=mime_type,
                     as_attachment=True,
-                    download_name=output_path.name
+                    download_name=output_filename
                 )
+
+                # Set additional headers on the response object
+                response.headers['Content-Disposition'] = f'attachment; filename="{output_filename}"'
+                response.headers['Content-Type'] = mime_type
+                response.headers['Access-Control-Expose-Headers'] = 'Content-Disposition'
+
+                return response
 
             finally:
                 # Change back to original directory

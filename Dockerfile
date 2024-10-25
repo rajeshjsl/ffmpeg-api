@@ -3,7 +3,7 @@ FROM python:3.9-slim AS base
 
 # Install FFmpeg and curl (for healthcheck)
 RUN apt-get update && \
-    apt-get install -y ffmpeg curl && \
+    apt-get install -y ffmpeg curl dos2unix && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -16,7 +16,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code and entrypoint
 COPY app.py entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+# Convert line endings and make executable
+RUN dos2unix entrypoint.sh && \
+    chmod +x entrypoint.sh
 
 # Create directory for temporary files
 RUN mkdir -p /tmp/ffmpeg_api && \
