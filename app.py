@@ -162,6 +162,7 @@ def create_app():
                 # Construct FFmpeg command with relative paths
                 ffmpeg_cmd = [
                     'ffmpeg',
+                    '-threads', '2',
                     '-i', relative_video,
                     '-vf', f'ass={relative_ass}',
                     '-c:v', 'libx264',

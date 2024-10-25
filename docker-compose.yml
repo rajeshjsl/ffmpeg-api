@@ -6,9 +6,9 @@ services:
         limits:
           cpus: '2'
     volumes:
-      - ffmpeg_api:/tmp/ffmpeg_api
+      - /ffmpeg_api:/tmp/ffmpeg_api
     environment:
-      - WORKERS=4
+      - WORKERS=2
       - THREADS=2
       - TIMEOUT=600         # 10 minutes HTTP timeout
       - FFMPEG_TIMEOUT=0    # FFmpeg timeout (0 = no timeout)
@@ -19,3 +19,9 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    sysctls:
+      net.core.somaxconn: 1024
