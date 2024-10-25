@@ -33,5 +33,8 @@ ENV FFMPEG_TIMEOUT=0
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD ["curl", "-f", "http://localhost:8000/health", "||", "exit", "1"]
 
+# Document that the container listens on port 8000
+EXPOSE 8000
+
 # Use entrypoint script
 ENTRYPOINT ["./entrypoint.sh"]
