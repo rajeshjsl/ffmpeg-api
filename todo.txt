@@ -1,0 +1,8 @@
+run_with_timeout() needs to kill ffmpeg after FFMPEG_TIMEOUT
+
+needs FFMPEG_THREADS instead of fixed 2 in the cli, default is to use all threads unless FFMPEG_THREADS is defined
+
+
+
+
+
